@@ -10,7 +10,7 @@ import { useRouter } from 'expo-router';
 export default function DownloadsScreen() {
   const router = useRouter();
   const [games, setGames] = useState<GameItem[]>([]);
-  const [filter, setFilter] = useState<'all' | 'available' | 'installed'>('all');
+  const [filter, setFilter] = useState<'available' | 'installed' | 'all'>('available');
   const [downloadingMap, setDownloadingMap] = useState<Record<string, number>>({});
 
   const loadData = async () => {
@@ -71,20 +71,22 @@ export default function DownloadsScreen() {
 
   return (
     <View style={styles.container}>
-      <Header title="Game Catalogue" subtitle="100% Offline Game Bundles" showBack={false} />
+      <Header title="Download New Games" subtitle="Explore & Download Offline Games" showBack={false} />
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        {/* Banner Card for Download New Games */}
+        <View style={styles.banner}>
+          <View style={styles.bannerTitleRow}>
+            <BoxIcon size={20} color="#0284C7" />
+            <Text style={styles.bannerTitle}>Download New Games</Text>
+          </View>
+          <Text style={styles.bannerText}>
+            Browse and download new offline game packages instantly. Downloaded games can be played 100% offline anytime!
+          </Text>
+        </View>
+
         {/* Filter Tabs */}
         <View style={styles.filterRow}>
-          <TouchableOpacity
-            style={[styles.filterTab, filter === 'all' && styles.filterTabActive]}
-            onPress={() => setFilter('all')}
-          >
-            <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
-              All ({games.length})
-            </Text>
-          </TouchableOpacity>
-
           <TouchableOpacity
             style={[styles.filterTab, filter === 'available' && styles.filterTabActive]}
             onPress={() => setFilter('available')}
@@ -100,6 +102,15 @@ export default function DownloadsScreen() {
           >
             <Text style={[styles.filterText, filter === 'installed' && styles.filterTextActive]}>
               Installed ({installedCount})
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.filterTab, filter === 'all' && styles.filterTabActive]}
+            onPress={() => setFilter('all')}
+          >
+            <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
+              All ({games.length})
             </Text>
           </TouchableOpacity>
         </View>
