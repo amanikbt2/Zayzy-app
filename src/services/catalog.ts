@@ -7,16 +7,6 @@ import { getDownloadedContent, saveDownloadedContent, deleteDownloadedContent, g
 export class GameCatalogService {
   public static async getGames(): Promise<GameItem[]> {
     const downloadedIds = await getDownloadedGameIds();
-    const remote = await fetchApi('/games');
-
-    if (remote && remote.success && Array.isArray(remote.data) && remote.data.length > 0) {
-      return remote.data.map((item: GameItem) => ({
-        ...item,
-        isDownloaded: BUNDLED_CONTENT_PACKAGES[item.gameId] ? true : downloadedIds.includes(item.gameId),
-      }));
-    }
-
-    // Fallback offline catalog with accurate local download states
     return LOCAL_GAME_CATALOG.map((item: GameItem) => ({
       ...item,
       isDownloaded: BUNDLED_CONTENT_PACKAGES[item.gameId] ? true : downloadedIds.includes(item.gameId),
@@ -25,13 +15,6 @@ export class GameCatalogService {
 
   public static async getGame(gameId: string): Promise<GameItem | null> {
     const downloadedIds = await getDownloadedGameIds();
-    const remote = await fetchApi(`/games/${gameId}`);
-    if (remote && remote.success && remote.data) {
-      return {
-        ...remote.data,
-        isDownloaded: BUNDLED_CONTENT_PACKAGES[gameId] ? true : downloadedIds.includes(gameId),
-      };
-    }
     const local = LOCAL_GAME_CATALOG.find((g) => g.gameId === gameId);
     if (!local) return null;
     return {
@@ -67,13 +50,6 @@ export class GameCatalogService {
       return DOWNLOADABLE_PACKAGES[gameId];
     }
 
-    // 4. Try fetching from remote API backend if available
-    const remote = await fetchApi(`/games/${gameId}/content`);
-    if (remote && remote.success && remote.data) {
-      await saveDownloadedContent(gameId, remote.data);
-      return remote.data;
-    }
-
     throw new Error(`Content package not found for game ${gameId}`);
   }
 
@@ -81,18 +57,10 @@ export class GameCatalogService {
     gameId: string,
     onProgress?: (progress: number) => void
   ): Promise<GameContentPackage> {
-    // Report initial downloading
-    onProgress?.(10);
+    onProgress?.(25);
 
     let pkg: GameContentPackage | null = null;
-
-    // 1. Try remote API backend
-    const remote = await fetchApi(`/games/${gameId}/content`);
-    onProgress?.(40);
-
-    if (remote && remote.success && remote.data) {
-      pkg = remote.data;
-    } else if (DOWNLOADABLE_PACKAGES[gameId]) {
+    if (DOWNLOADABLE_PACKAGES[gameId]) {
       pkg = DOWNLOADABLE_PACKAGES[gameId];
     } else if (BUNDLED_CONTENT_PACKAGES[gameId]) {
       pkg = BUNDLED_CONTENT_PACKAGES[gameId];
