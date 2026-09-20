@@ -25,11 +25,19 @@ export const Header: React.FC<Props> = ({
     getUserProfile().then(setProfile);
   }, []);
 
+  const handleBack = () => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.push('/');
+    }
+  };
+
   return (
     <View style={styles.headerContainer}>
       <View style={styles.topRow}>
         {showBack ? (
-          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <TouchableOpacity style={styles.backBtn} onPress={handleBack} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
             <BackIcon size={20} color="#0284C7" />
           </TouchableOpacity>
         ) : null}
