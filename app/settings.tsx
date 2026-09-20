@@ -4,6 +4,7 @@ import { Header } from '../src/components/Header';
 import { BottomNavBar } from '../src/components/BottomNavBar';
 import { getSettings, saveSettings } from '../src/storage/settings';
 import { UserSettings } from '../src/types/progress';
+import { VolumeIcon, UserIcon, InfoIcon } from '../src/components/SvgIcons';
 
 export default function SettingsScreen() {
   const [settings, setSettingsState] = useState<UserSettings | null>(null);
@@ -38,7 +39,10 @@ export default function SettingsScreen() {
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🔊 Audio Options</Text>
+          <View style={styles.sectionHeader}>
+            <VolumeIcon size={20} color="#0284C7" />
+            <Text style={styles.sectionTitle}>Audio Options</Text>
+          </View>
           <View style={styles.card}>
             <View style={styles.row}>
               <View>
@@ -86,7 +90,10 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>👤 Player Profile</Text>
+          <View style={styles.sectionHeader}>
+            <UserIcon size={20} color="#0284C7" />
+            <Text style={styles.sectionTitle}>Player Profile</Text>
+          </View>
           <View style={styles.card}>
             <View style={styles.row}>
               <Text style={styles.rowLabel}>Player Handle</Text>
@@ -101,7 +108,10 @@ export default function SettingsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ℹ️ About Zayzy Games</Text>
+          <View style={styles.sectionHeader}>
+            <InfoIcon size={20} color="#0284C7" />
+            <Text style={styles.sectionTitle}>About Zayzy Games</Text>
+          </View>
           <View style={styles.card}>
             <Text style={styles.infoText}>Platform Version: 1.0.0 (V1 Release)</Text>
             <Text style={styles.infoText}>Target: Android & React Native Web</Text>
