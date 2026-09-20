@@ -191,12 +191,12 @@ export default function DownloadsScreen() {
                       <PlayIcon size={12} color="#FFFFFF" style={{ marginLeft: 4 }} />
                     </TouchableOpacity>
 
-                    {/* Allow deleting unbundled games */}
-                    {game.gameId !== 'bubble-shooter' && game.gameId !== 'sweet-garden' && game.gameId !== 'sliding-puzzle' ? (
-                      <TouchableOpacity style={styles.removeBtn} onPress={() => handleDelete(game.gameId)}>
-                        <Text style={styles.removeBtnText}>Remove Package</Text>
-                      </TouchableOpacity>
-                    ) : null}
+                    <TouchableOpacity
+                      style={styles.uninstallBtn}
+                      onPress={() => handleDelete(game.gameId)}
+                    >
+                      <Text style={styles.uninstallBtnText}>UNINSTALL</Text>
+                    </TouchableOpacity>
                   </View>
                 ) : (
                   <TouchableOpacity
@@ -411,14 +411,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
   },
-  removeBtn: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+  uninstallBtn: {
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FCA5A5',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  removeBtnText: {
+  uninstallBtnText: {
     color: '#EF4444',
-    fontSize: 11,
-    fontWeight: 'bold',
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.3,
   },
   downloadBtn: {
     backgroundColor: '#0284C7',

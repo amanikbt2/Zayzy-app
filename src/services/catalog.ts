@@ -2,24 +2,47 @@ import { fetchApi } from './api';
 import { GameItem, GameContentPackage } from '../types/game';
 import { LOCAL_GAME_CATALOG, BUNDLED_CONTENT_PACKAGES } from '../games/localCatalog';
 import { DOWNLOADABLE_PACKAGES } from '../games/downloadablePackages';
-import { getDownloadedContent, saveDownloadedContent, deleteDownloadedContent, getDownloadedGameIds } from '../storage/downloads';
+import { getDownloadedContent, saveDownloadedContent, deleteDownloadedContent, getDownloadedGameIds, getUninstalledGameIds } from '../storage/downloads';
 
 export class GameCatalogService {
   public static async getGames(): Promise<GameItem[]> {
     const downloadedIds = await getDownloadedGameIds();
-    return LOCAL_GAME_CATALOG.map((item: GameItem) => ({
-      ...item,
-      isDownloaded: BUNDLED_CONTENT_PACKAGES[item.gameId] ? true : downloadedIds.includes(item.gameId),
-    }));
+    const uninstalledIds = await getUninstalledGameIds();
+
+    return LOCAL_GAME_CATALOG.map((item: GameItem) => {
+      let isDownloaded = false;
+      if (uninstalledIds.includes(item.gameId)) {
+        isDownloaded = false;
+      } else if (BUNDLED_CONTENT_PACKAGES[item.gameId]) {
+        isDownloaded = true;
+      } else {
+        isDownloaded = downloadedIds.includes(item.gameId);
+      }
+      return {
+        ...item,
+        isDownloaded,
+      };
+    });
   }
 
   public static async getGame(gameId: string): Promise<GameItem | null> {
     const downloadedIds = await getDownloadedGameIds();
+    const uninstalledIds = await getUninstalledGameIds();
     const local = LOCAL_GAME_CATALOG.find((g) => g.gameId === gameId);
     if (!local) return null;
+
+    let isDownloaded = false;
+    if (uninstalledIds.includes(gameId)) {
+      isDownloaded = false;
+    } else if (BUNDLED_CONTENT_PACKAGES[gameId]) {
+      isDownloaded = true;
+    } else {
+      isDownloaded = downloadedIds.includes(gameId);
+    }
+
     return {
       ...local,
-      isDownloaded: BUNDLED_CONTENT_PACKAGES[gameId] ? true : downloadedIds.includes(gameId),
+      isDownloaded,
     };
   }
 
