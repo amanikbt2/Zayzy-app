@@ -5,6 +5,7 @@ import { Header } from '../../src/components/Header';
 import { BottomNavBar } from '../../src/components/BottomNavBar';
 import { LevelSelectModal } from '../../src/components/LevelSelectModal';
 import { GameOverlayModal } from '../../src/components/GameOverlayModal';
+import { InGameControlBar } from '../../src/components/InGameControlBar';
 import { BubbleShooterView } from '../../src/engines/BubbleShooter/BubbleShooterView';
 import { Match3View } from '../../src/engines/Match3/Match3View';
 import { PuzzleView } from '../../src/engines/Puzzle/PuzzleView';
@@ -160,6 +161,13 @@ export default function GameDetailScreen() {
               onPause={() => setOverlayType('pause')}
             />
           )}
+
+          {/* Floating In-Game Bar for Help (?) & Info (i) */}
+          <InGameControlBar
+            game={game}
+            currentLevel={selectedLevel}
+            progress={progress}
+          />
 
           {/* Victory / Game Over / Pause Overlay */}
           {overlayType ? (
