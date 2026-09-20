@@ -34,7 +34,7 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      <Header title="Settings" subtitle="Audio & App Preferences" showBack={true} />
+      <Header title="Settings" subtitle="Audio & App Preferences" showBack={false} />
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         <View style={styles.section}>

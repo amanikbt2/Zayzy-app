@@ -14,3 +14,17 @@ export interface UserSettings {
   userId: string;
   username: string;
 }
+
+export interface UserProfile {
+  userId: string;
+  googleId?: string;
+  username: string;
+  email?: string;
+  avatar?: string;
+  phoneNumber?: string;
+  course?: string;
+  campus?: string;
+  bio?: string;
+  isProfileComplete?: boolean;
+  isLoggedIn?: boolean;
+}

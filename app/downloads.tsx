@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { Header } from '../src/components/Header';
+import { BottomNavBar } from '../src/components/BottomNavBar';
 import { GameCatalogService } from '../src/services/catalog';
 import { GameItem } from '../src/types/game';
 import { BoxIcon, DownloadIcon, RefreshIcon, PlayIcon, StarIcon } from '../src/components/SvgIcons';
@@ -70,20 +71,9 @@ export default function DownloadsScreen() {
 
   return (
     <View style={styles.container}>
-      <Header title="Game Catalog & Downloads" subtitle="100% Offline Game Bundles" showBack={true} />
+      <Header title="Game Catalogue" subtitle="100% Offline Game Bundles" showBack={false} />
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-        {/* Play Store Compliance Banner */}
-        <View style={styles.banner}>
-          <View style={styles.bannerTitleRow}>
-            <BoxIcon size={20} color="#0284C7" />
-            <Text style={styles.bannerTitle}>Dynamic Content Download System</Text>
-          </View>
-          <Text style={styles.bannerText}>
-            Google Play Policy Compliant: Games download non-executable JSON data packages (levels, goals, assets metadata) evaluated by pre-compiled in-app engine drivers.
-          </Text>
-        </View>
-
         {/* Filter Tabs */}
         <View style={styles.filterRow}>
           <TouchableOpacity
@@ -192,6 +182,8 @@ export default function DownloadsScreen() {
           );
         })}
       </ScrollView>
+
+      <BottomNavBar />
     </View>
   );
 }

@@ -217,11 +217,12 @@ const styles = StyleSheet.create({
   },
   gridContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
+    gap: 8,
+    width: '100%',
   },
   gridColumn: {
-    width: '31.5%',
+    flex: 1,
+    minWidth: 0,
   },
   downloadBanner: {
     backgroundColor: '#E0F2FE',

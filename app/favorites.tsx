@@ -32,7 +32,7 @@ export default function FavoritesScreen() {
 
   return (
     <View style={styles.container}>
-      <Header title="Favorites" subtitle="Your favorite offline games" showBack={true} />
+      <Header title="Favorites" subtitle="Your favorite offline games" showBack={false} />
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         {favoriteGames.length === 0 ? (
@@ -76,11 +76,12 @@ const styles = StyleSheet.create({
   },
   gridContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
+    gap: 8,
+    width: '100%',
   },
   gridColumn: {
-    width: '31.5%',
+    flex: 1,
+    minWidth: 0,
   },
   emptyContainer: {
     alignItems: 'center',
