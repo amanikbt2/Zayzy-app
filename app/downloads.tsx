@@ -5,6 +5,7 @@ import { BottomNavBar } from '../src/components/BottomNavBar';
 import { GameCatalogService } from '../src/services/catalog';
 import { GameItem } from '../src/types/game';
 import { BoxIcon, DownloadIcon, RefreshIcon, PlayIcon, StarIcon } from '../src/components/SvgIcons';
+import { SearchBar } from '../src/components/SearchBar';
 import { useRouter } from 'expo-router';
 
 export default function DownloadsScreen() {
@@ -12,6 +13,7 @@ export default function DownloadsScreen() {
   const [games, setGames] = useState<GameItem[]>([]);
   const [filter, setFilter] = useState<'available' | 'installed' | 'all'>('available');
   const [downloadingMap, setDownloadingMap] = useState<Record<string, number>>({});
+  const [searchQuery, setSearchQuery] = useState('');
 
   const loadData = async () => {
     const catalog = await GameCatalogService.getGames();
@@ -64,14 +66,24 @@ export default function DownloadsScreen() {
   const availableCount = games.filter((g) => !g.isDownloaded).length;
 
   const filteredGames = games.filter((g) => {
-    if (filter === 'installed') return g.isDownloaded;
-    if (filter === 'available') return !g.isDownloaded;
-    return true;
+    const matchesFilter =
+      filter === 'installed' ? g.isDownloaded : filter === 'available' ? !g.isDownloaded : true;
+    const matchesSearch =
+      searchQuery.trim() === '' ||
+      g.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      g.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      g.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
   });
 
   return (
     <View style={styles.container}>
       <Header title="Download New Games" subtitle="Explore & Download Offline Games" showBack={false} />
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder="Search games by name or category..."
+      />
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
         {/* Banner Card for Download New Games */}
@@ -114,6 +126,16 @@ export default function DownloadsScreen() {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Empty Search / Filter State */}
+        {filteredGames.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyTitle}>No Games Found</Text>
+            <Text style={styles.emptySub}>
+              {searchQuery ? `No games match "${searchQuery}"` : 'No games available in this tab.'}
+            </Text>
+          </View>
+        ) : null}
 
         {/* Games List */}
         {filteredGames.map((game) => {
@@ -412,5 +434,26 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 13,
     fontWeight: 'bold',
+  },
+  emptyContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    marginTop: 12,
+  },
+  emptyTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#0F172A',
+  },
+  emptySub: {
+    fontSize: 13,
+    color: '#64748B',
+    marginTop: 4,
+    textAlign: 'center',
   },
 });

@@ -8,6 +8,7 @@ import { getAllLocalProgress } from '../src/storage/gameProgress';
 import { getFavorites, toggleFavorite } from '../src/storage/settings';
 import { GameItem } from '../src/types/game';
 import { LocalGameProgress } from '../src/types/progress';
+import { SearchBar } from '../src/components/SearchBar';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { PlayIcon, FlameIcon, SparkleIcon, StarIcon, DownloadIcon } from '../src/components/SvgIcons';
 
@@ -17,6 +18,7 @@ export default function HomeScreen() {
   const [progressMap, setProgressMap] = useState<Record<string, LocalGameProgress>>({});
   const [favorites, setFavorites] = useState<string[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const loadData = async () => {
     const catalog = await GameCatalogService.getGames();
@@ -46,6 +48,15 @@ export default function HomeScreen() {
   };
 
   const installedGames = games.filter((g) => g.isDownloaded);
+  const searchResults = searchQuery.trim()
+    ? installedGames.filter(
+        (g) =>
+          g.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          g.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          g.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
   const featuredGames = installedGames.filter((g) => g.isFeatured);
   const newGames = installedGames.filter((g) => g.isNew);
   const favoriteGames = installedGames.filter((g) => favorites.includes(g.gameId));
@@ -60,6 +71,11 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Header title="Zayzy Games" subtitle="Zayzy Games - offline" />
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder="Search offline games..."
+      />
 
       <ScrollView
         style={styles.scroll}
@@ -80,107 +96,135 @@ export default function HomeScreen() {
           </View>
         </TouchableOpacity>
 
-        {/* Continue Playing Banner */}
-        {lastPlayedGameItem ? (
+        {searchQuery.trim() !== '' ? (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <PlayIcon size={20} color="#10B981" />
-              <Text style={styles.sectionTitle}>Continue Playing</Text>
+              <Text style={styles.sectionTitle}>Search Results ({searchResults.length})</Text>
             </View>
-            <GameCard
-              game={lastPlayedGameItem}
-              progressText={`Level ${progressMap[lastPlayedGameItem.gameId]?.currentLevel || 1} • High Score: ${progressMap[lastPlayedGameItem.gameId]?.highScore || 0}`}
-              isFavorite={favorites.includes(lastPlayedGameItem.gameId)}
-              onToggleFavorite={() => handleToggleFav(lastPlayedGameItem.gameId)}
-            />
+            {searchResults.length > 0 ? (
+              <View style={styles.gridContainer}>
+                {searchResults.map((game) => (
+                  <View key={`srch-${game.gameId}`} style={styles.gridColumn}>
+                    <GameCard
+                      game={game}
+                      progressText={`Level ${progressMap[game.gameId]?.currentLevel || 1}/5`}
+                      isFavorite={favorites.includes(game.gameId)}
+                      onToggleFavorite={() => handleToggleFav(game.gameId)}
+                    />
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <View style={{ backgroundColor: '#FFFFFF', padding: 24, borderRadius: 16, alignItems: 'center', marginTop: 8, borderWidth: 1, borderColor: '#E2E8F0' }}>
+                <Text style={{ fontSize: 16, fontWeight: '800', color: '#0F172A' }}>No Games Found</Text>
+                <Text style={{ fontSize: 13, color: '#64748B', marginTop: 4 }}>No installed games match "{searchQuery}"</Text>
+              </View>
+            )}
           </View>
-        ) : null}
-
-        {/* Featured Section */}
-        {featuredGames.length > 0 ? (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <FlameIcon size={20} color="#EF4444" />
-              <Text style={styles.sectionTitle}>Featured Games</Text>
-            </View>
-            <View style={styles.gridContainer}>
-              {featuredGames.map((game) => (
-                <View key={`feat-${game.gameId}`} style={styles.gridColumn}>
-                  <GameCard
-                    game={game}
-                    progressText={`Level ${progressMap[game.gameId]?.currentLevel || 1}/5`}
-                    isFavorite={favorites.includes(game.gameId)}
-                    onToggleFavorite={() => handleToggleFav(game.gameId)}
-                  />
+        ) : (
+          <>
+            {/* Continue Playing Banner */}
+            {lastPlayedGameItem ? (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <PlayIcon size={20} color="#10B981" />
+                  <Text style={styles.sectionTitle}>Continue Playing</Text>
                 </View>
-              ))}
-            </View>
-          </View>
-        ) : null}
-
-        {/* New Games */}
-        {newGames.length > 0 ? (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <SparkleIcon size={20} color="#3B82F6" />
-              <Text style={styles.sectionTitle}>New Games</Text>
-            </View>
-            <View style={styles.gridContainer}>
-              {newGames.map((game) => (
-                <View key={`new-${game.gameId}`} style={styles.gridColumn}>
-                  <GameCard
-                    game={game}
-                    progressText={`5 Levels Available`}
-                    isFavorite={favorites.includes(game.gameId)}
-                    onToggleFavorite={() => handleToggleFav(game.gameId)}
-                  />
-                </View>
-              ))}
-            </View>
-          </View>
-        ) : null}
-
-        {/* Favorites */}
-        {favoriteGames.length > 0 ? (
-          <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <StarIcon size={20} color="#F59E0B" filled />
-              <Text style={styles.sectionTitle}>Favorites</Text>
-            </View>
-            <View style={styles.gridContainer}>
-              {favoriteGames.map((game) => (
-                <View key={`fav-${game.gameId}`} style={styles.gridColumn}>
-                  <GameCard
-                    game={game}
-                    progressText={`Level ${progressMap[game.gameId]?.currentLevel || 1}/5`}
-                    isFavorite={true}
-                    onToggleFavorite={() => handleToggleFav(game.gameId)}
-                  />
-                </View>
-              ))}
-            </View>
-          </View>
-        ) : null}
-
-        {/* All Installed Catalog Games */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <DownloadIcon size={20} color="#10B981" />
-            <Text style={styles.sectionTitle}>My Games (Offline Ready)</Text>
-          </View>
-          <View style={styles.gridContainer}>
-            {installedGames.map((game) => (
-              <View key={`all-${game.gameId}`} style={styles.gridColumn}>
                 <GameCard
-                  game={game}
-                  progressText={`Level ${progressMap[game.gameId]?.currentLevel || 1}/5`}
-                  isFavorite={favorites.includes(game.gameId)}
-                  onToggleFavorite={() => handleToggleFav(game.gameId)}
+                  game={lastPlayedGameItem}
+                  progressText={`Level ${progressMap[lastPlayedGameItem.gameId]?.currentLevel || 1} • High Score: ${progressMap[lastPlayedGameItem.gameId]?.highScore || 0}`}
+                  isFavorite={favorites.includes(lastPlayedGameItem.gameId)}
+                  onToggleFavorite={() => handleToggleFav(lastPlayedGameItem.gameId)}
                 />
               </View>
-            ))}
-          </View>
-        </View>
+            ) : null}
+
+            {/* Featured Section */}
+            {featuredGames.length > 0 ? (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <FlameIcon size={20} color="#EF4444" />
+                  <Text style={styles.sectionTitle}>Featured Games</Text>
+                </View>
+                <View style={styles.gridContainer}>
+                  {featuredGames.map((game) => (
+                    <View key={`feat-${game.gameId}`} style={styles.gridColumn}>
+                      <GameCard
+                        game={game}
+                        progressText={`Level ${progressMap[game.gameId]?.currentLevel || 1}/5`}
+                        isFavorite={favorites.includes(game.gameId)}
+                        onToggleFavorite={() => handleToggleFav(game.gameId)}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </View>
+            ) : null}
+
+            {/* New Games */}
+            {newGames.length > 0 ? (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <SparkleIcon size={20} color="#3B82F6" />
+                  <Text style={styles.sectionTitle}>New Games</Text>
+                </View>
+                <View style={styles.gridContainer}>
+                  {newGames.map((game) => (
+                    <View key={`new-${game.gameId}`} style={styles.gridColumn}>
+                      <GameCard
+                        game={game}
+                        progressText={`5 Levels Available`}
+                        isFavorite={favorites.includes(game.gameId)}
+                        onToggleFavorite={() => handleToggleFav(game.gameId)}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </View>
+            ) : null}
+
+            {/* Favorites */}
+            {favoriteGames.length > 0 ? (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <StarIcon size={20} color="#F59E0B" filled />
+                  <Text style={styles.sectionTitle}>Favorites</Text>
+                </View>
+                <View style={styles.gridContainer}>
+                  {favoriteGames.map((game) => (
+                    <View key={`fav-${game.gameId}`} style={styles.gridColumn}>
+                      <GameCard
+                        game={game}
+                        progressText={`Level ${progressMap[game.gameId]?.currentLevel || 1}/5`}
+                        isFavorite={true}
+                        onToggleFavorite={() => handleToggleFav(game.gameId)}
+                      />
+                    </View>
+                  ))}
+                </View>
+              </View>
+            ) : null}
+
+            {/* All Games Grid */}
+            <View style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Text style={styles.sectionTitle}>All Installed Games</Text>
+              </View>
+              <View style={styles.gridContainer}>
+                {installedGames.map((game) => (
+                  <View key={`all-${game.gameId}`} style={styles.gridColumn}>
+                    <GameCard
+                      game={game}
+                      progressText={`Level ${progressMap[game.gameId]?.currentLevel || 1}/5`}
+                      isFavorite={favorites.includes(game.gameId)}
+                      onToggleFavorite={() => handleToggleFav(game.gameId)}
+                    />
+                  </View>
+                ))}
+              </View>
+            </View>
+          </>
+        )}
       </ScrollView>
 
       <BottomNavBar />

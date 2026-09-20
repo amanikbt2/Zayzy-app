@@ -301,6 +301,14 @@ export const HelpCircleIcon: React.FC<IconProps> = ({ size = 24, color = '#38BDF
   </Svg>
 );
 
+// 🔍 Search Icon
+export const SearchIcon: React.FC<IconProps> = ({ size = 24, color = '#64748B', style }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={style}>
+    <Circle cx="11" cy="11" r="7" stroke={color} strokeWidth="2.2" />
+    <Path d="M16 16l4.5 4.5" stroke={color} strokeWidth="2.2" strokeLinecap="round" />
+  </Svg>
+);
+
 
 // ================= MATCH 3 ITEM SVGS =================
 

@@ -2,6 +2,7 @@
   "expo": {
     "name": "Zayzy Games",
     "slug": "zayzy-games",
+    "owner": "sliver1",
     "version": "1.0.0",
     "description": "Zayzy Games - offline",
     "icon": "./assets/icon.png",
