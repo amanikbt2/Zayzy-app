@@ -260,46 +260,41 @@ export default function GameDetailScreen() {
                   <TouchableOpacity
                     key={`level-card-${lvl}`}
                     style={[
-                      styles.levelCard,
-                      isUnlocked ? styles.unlockedCard : styles.lockedCard,
+                      styles.levelGridCard,
+                      isUnlocked ? styles.unlockedGridCard : styles.lockedGridCard,
                     ]}
                     disabled={!isUnlocked || !game.isDownloaded}
                     activeOpacity={0.8}
                     onPress={() => handleStartGame(lvl)}
                   >
-                    <View style={styles.levelCardHeader}>
-                      <Text style={[styles.levelCardBadge, !isUnlocked && styles.lockedBadge]}>
-                        LEVEL {lvl}
-                      </Text>
-                      {isUnlocked ? (
-                        <View style={styles.playTag}>
-                          <PlayIcon size={10} color="#FFFFFF" />
-                        </View>
-                      ) : (
-                        <LockIcon size={14} color="#94A3B8" />
-                      )}
-                    </View>
-
                     {isUnlocked ? (
-                      <View style={styles.levelCardBody}>
-                        <Text style={styles.levelTitleText}>
-                          {isCompleted ? 'Completed' : 'Play Now'}
-                        </Text>
-                        <View style={styles.starsRow}>
+                      <>
+                        <View style={styles.cardHeaderRow}>
+                          <Text style={styles.cardLevelBadge}>LVL {lvl}</Text>
+                          <View style={styles.playTagMini}>
+                            <PlayIcon size={9} color="#FFFFFF" />
+                          </View>
+                        </View>
+
+                        <Text style={styles.cardStatusText}>{isCompleted ? 'Cleared' : 'Play'}</Text>
+
+                        <View style={styles.starsRowMini}>
                           {[1, 2, 3].map((s) => (
                             <StarIcon
                               key={`star-${lvl}-${s}`}
-                              size={12}
+                              size={11}
                               color="#F59E0B"
                               filled={isCompleted && s <= Math.max(1, stars)}
                             />
                           ))}
                         </View>
-                      </View>
+                      </>
                     ) : (
-                      <View style={styles.levelCardBody}>
-                        <Text style={styles.lockedText}>Locked</Text>
-                        <Text style={styles.lockedSubText}>Pass Level {lvl - 1}</Text>
+                      <View style={styles.lockedCardContent}>
+                        <View style={styles.lockIconCircle}>
+                          <LockIcon size={16} color="#94A3B8" />
+                        </View>
+                        <Text style={styles.lockedLevelBadge}>LVL {lvl}</Text>
                       </View>
                     )}
                   </TouchableOpacity>
@@ -435,74 +430,82 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   levelGrid: {
-    flexDirection: 'column',
-    gap: 12,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    justifyContent: 'flex-start',
   },
-  levelCard: {
+  levelGridCard: {
+    width: '31%',
+    height: 96,
     borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
+    padding: 10,
+    justifyContent: 'space-between',
+    borderWidth: 1.5,
     shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
   },
-  unlockedCard: {
+  unlockedGridCard: {
     backgroundColor: '#FFFFFF',
     borderColor: '#0284C7',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
-    elevation: 3,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  lockedCard: {
+  lockedGridCard: {
     backgroundColor: '#F8FAFC',
     borderColor: '#E2E8F0',
     shadowOpacity: 0,
     elevation: 0,
     opacity: 0.7,
   },
-  levelCardHeader: {
+  cardHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
   },
-  levelCardBadge: {
-    fontSize: 14,
-    fontWeight: 'bold',
+  cardLevelBadge: {
+    fontSize: 12,
+    fontWeight: '800',
     color: '#0284C7',
     letterSpacing: 0.5,
   },
-  lockedBadge: {
-    color: '#64748B',
-  },
-  playTag: {
+  playTagMini: {
     backgroundColor: '#0284C7',
-    borderRadius: 12,
-    width: 24,
-    height: 24,
+    borderRadius: 10,
+    width: 20,
+    height: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  levelCardBody: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  levelTitleText: {
-    fontSize: 15,
+  cardStatusText: {
+    fontSize: 13,
     fontWeight: '700',
     color: '#0F172A',
+    marginTop: 2,
   },
-  starsRow: {
+  starsRowMini: {
     flexDirection: 'row',
-    gap: 4,
+    gap: 3,
+    alignItems: 'center',
   },
-  lockedText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#94A3B8',
+  lockedCardContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
   },
-  lockedSubText: {
-    fontSize: 11,
+  lockIconCircle: {
+    backgroundColor: '#E2E8F0',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockedLevelBadge: {
+    fontSize: 12,
+    fontWeight: '800',
     color: '#94A3B8',
   },
   gameViewContainer: {
