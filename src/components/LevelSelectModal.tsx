@@ -31,7 +31,7 @@ export const LevelSelectModal: React.FC<Props> = ({
 
           <View style={styles.levelGrid}>
             {levels.map((lvl) => {
-              const isUnlocked = lvl === 1 || progress.completedLevels.includes(lvl - 1) || progress.currentLevel >= lvl;
+              const isUnlocked = lvl === 1 || progress.completedLevels.includes(lvl - 1);
               const stars = progress.stars[lvl] || 0;
               const isCompleted = progress.completedLevels.includes(lvl);
 

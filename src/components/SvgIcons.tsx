@@ -287,6 +287,21 @@ export const InfoIcon: React.FC<IconProps> = ({ size = 24, color = '#6366F1', st
   </Svg>
 );
 
+// ❓ Help / Question Mark Icon
+export const HelpCircleIcon: React.FC<IconProps> = ({ size = 24, color = '#38BDF8', style }) => (
+  <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" style={style}>
+    <Circle cx="12" cy="12" r="9" stroke={color} strokeWidth="2" />
+    <Path
+      d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m.08 4h.01"
+      stroke={color}
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+
 // ================= MATCH 3 ITEM SVGS =================
 
 // 🍎 Apple SVG

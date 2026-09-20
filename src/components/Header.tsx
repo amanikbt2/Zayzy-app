@@ -29,16 +29,12 @@ export const Header: React.FC<Props> = ({
     <View style={styles.headerContainer}>
       <View style={styles.topRow}>
         {showBack ? (
-          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-            <BackIcon size={16} color="#0284C7" />
-            <Text style={styles.backText}>Back</Text>
+          <TouchableOpacity style={styles.backBtn} onPress={() => router.back()} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+            <BackIcon size={20} color="#0284C7" />
           </TouchableOpacity>
         ) : null}
         <View>
-          <View style={styles.titleRow}>
-            <Image source={require('../../assets/zayzy-logo.png')} style={styles.brandLogo} />
-            <Text style={styles.title}>{title}</Text>
-          </View>
+          <Text style={styles.title}>{title}</Text>
           <Text style={styles.subtitle}>{subtitle}</Text>
         </View>
       </View>
@@ -93,29 +89,13 @@ const styles = StyleSheet.create({
   },
   backBtn: {
     backgroundColor: '#F1F5F9',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-  },
-  backText: {
-    color: '#0284C7',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  brandLogo: {
-    width: 26,
-    height: 26,
-    borderRadius: 6,
+    justifyContent: 'center',
   },
   title: {
     color: '#0F172A',

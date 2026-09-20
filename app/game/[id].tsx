@@ -13,7 +13,7 @@ import { getLocalProgress, saveLocalProgress } from '../../src/storage/gameProgr
 import { getFavorites, toggleFavorite } from '../../src/storage/settings';
 import { GameItem, GameContentPackage } from '../../src/types/game';
 import { LocalGameProgress } from '../../src/types/progress';
-import { StarIcon, PlayIcon, ListIcon } from '../../src/components/SvgIcons';
+import { StarIcon, PlayIcon, ListIcon, LockIcon } from '../../src/components/SvgIcons';
 
 export default function GameDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -183,96 +183,122 @@ export default function GameDetailScreen() {
           ) : null}
         </View>
       ) : (
-        // Game Detail Overview Screen
+        // Direct Level Selection Screen
         <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-          <Image source={{ uri: game.thumbnailUrl }} style={styles.heroImage} />
+          {/* Compact Game Banner Card */}
+          <View style={styles.gameBannerCard}>
+            <Image source={{ uri: game.thumbnailUrl }} style={styles.bannerThumbnail} />
+            <View style={styles.bannerInfo}>
+              <Text style={styles.bannerTitle} numberOfLines={1}>{game.title}</Text>
+              <Text style={styles.bannerMeta}>{game.category} • {game.downloadSize}</Text>
 
-          <View style={styles.detailCard}>
-            <View style={styles.titleRow}>
-              <View>
-                <Text style={styles.gameTitle}>{game.title}</Text>
-                <Text style={styles.gameMeta}>
-                  {game.category} • Version {game.version} • {game.downloadSize}
-                </Text>
-              </View>
-
-              <TouchableOpacity style={styles.favBtn} onPress={handleToggleFav}>
-                <StarIcon size={20} color="#F59E0B" filled={isFav} />
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.description}>{game.description}</Text>
-
-            {/* Progress Stats */}
-            <View style={styles.statsRow}>
-              <View style={styles.statBox}>
-                <Text style={styles.statLabel}>CURRENT LEVEL</Text>
-                <Text style={styles.statVal}>{progress.currentLevel}/5</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statLabel}>HIGH SCORE</Text>
-                <Text style={styles.statVal}>{progress.highScore}</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statLabel}>STATUS</Text>
-                <Text style={game.isDownloaded ? styles.statValText : styles.statValTextNot}>
-                  {game.isDownloaded ? 'Downloaded (Offline)' : 'Not Downloaded'}
-                </Text>
+              <View style={styles.bannerStatsRow}>
+                <View style={styles.miniStat}>
+                  <Text style={styles.miniStatLabel}>UNLOCKED</Text>
+                  <Text style={styles.miniStatValue}>{progress.completedLevels.length + 1}/5</Text>
+                </View>
+                <View style={styles.miniStat}>
+                  <Text style={styles.miniStatLabel}>HIGH SCORE</Text>
+                  <Text style={styles.miniStatValue}>{progress.highScore}</Text>
+                </View>
               </View>
             </View>
 
-            {/* Action Buttons */}
-            {game.isDownloaded ? (
-              <>
-                <TouchableOpacity style={styles.mainPlayBtn} onPress={() => handleStartGame(progress.currentLevel)}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Text style={styles.mainPlayText}>PLAY LEVEL {progress.currentLevel}</Text>
-                    <PlayIcon size={18} color="#FFFFFF" />
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.levelSelectBtn} onPress={() => setShowLevelModal(true)}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                    <Text style={styles.levelSelectText}>SELECT LEVEL (1–5)</Text>
-                    <ListIcon size={18} color="#6366F1" />
-                  </View>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <View>
-                {isDownloading ? (
-                  <View style={{ marginBottom: 12 }}>
-                    <Text style={{ color: '#0284C7', fontWeight: 'bold', fontSize: 13, marginBottom: 4 }}>
-                      Downloading JSON Content Bundle ({downloadProgress}%)...
-                    </Text>
-                    <View style={{ height: 8, backgroundColor: '#E2E8F0', borderRadius: 4, overflow: 'hidden' }}>
-                      <View style={{ height: '100%', width: `${downloadProgress}%`, backgroundColor: '#0284C7' }} />
-                    </View>
-                  </View>
-                ) : null}
-
-                <TouchableOpacity
-                  style={[styles.mainPlayBtn, { backgroundColor: '#0284C7' }]}
-                  onPress={handleDownloadPackage}
-                  disabled={isDownloading}
-                >
-                  <Text style={styles.mainPlayText}>
-                    {isDownloading ? `DOWNLOADING ${downloadProgress}%...` : `DOWNLOAD GAME PACKAGE (${game.downloadSize})`}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
+            <TouchableOpacity style={styles.favBtn} onPress={handleToggleFav}>
+              <StarIcon size={20} color="#F59E0B" filled={isFav} />
+            </TouchableOpacity>
           </View>
 
-          {/* Level Selection Modal */}
-          <LevelSelectModal
-            visible={showLevelModal}
-            gameTitle={game.title}
-            progress={progress}
-            totalLevels={5}
-            onSelectLevel={(lvl) => handleStartGame(lvl)}
-            onClose={() => setShowLevelModal(false)}
-          />
+          {/* Package Download Bar if Not Downloaded */}
+          {!game.isDownloaded ? (
+            <View style={styles.downloadSection}>
+              {isDownloading ? (
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={{ color: '#0284C7', fontWeight: 'bold', fontSize: 13, marginBottom: 4 }}>
+                    Downloading Game Package ({downloadProgress}%)...
+                  </Text>
+                  <View style={{ height: 8, backgroundColor: '#E2E8F0', borderRadius: 4, overflow: 'hidden' }}>
+                    <View style={{ height: '100%', width: `${downloadProgress}%`, backgroundColor: '#0284C7' }} />
+                  </View>
+                </View>
+              ) : null}
+
+              <TouchableOpacity
+                style={styles.downloadBtn}
+                onPress={handleDownloadPackage}
+                disabled={isDownloading}
+              >
+                <Text style={styles.downloadBtnText}>
+                  {isDownloading ? `DOWNLOADING ${downloadProgress}%...` : `DOWNLOAD GAME PACKAGE (${game.downloadSize})`}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
+
+          {/* Main Level Picker Grid */}
+          <View style={styles.levelSection}>
+            <Text style={styles.levelSectionTitle}>SELECT LEVEL</Text>
+            <Text style={styles.levelSectionSub}>
+              Level 1 is unlocked. Complete levels to unlock the next!
+            </Text>
+
+            <View style={styles.levelGrid}>
+              {[1, 2, 3, 4, 5].map((lvl) => {
+                const isUnlocked = lvl === 1 || progress.completedLevels.includes(lvl - 1);
+                const stars = progress.stars[lvl] || 0;
+                const isCompleted = progress.completedLevels.includes(lvl);
+
+                return (
+                  <TouchableOpacity
+                    key={`level-card-${lvl}`}
+                    style={[
+                      styles.levelCard,
+                      isUnlocked ? styles.unlockedCard : styles.lockedCard,
+                    ]}
+                    disabled={!isUnlocked || !game.isDownloaded}
+                    activeOpacity={0.8}
+                    onPress={() => handleStartGame(lvl)}
+                  >
+                    <View style={styles.levelCardHeader}>
+                      <Text style={[styles.levelCardBadge, !isUnlocked && styles.lockedBadge]}>
+                        LEVEL {lvl}
+                      </Text>
+                      {isUnlocked ? (
+                        <View style={styles.playTag}>
+                          <PlayIcon size={10} color="#FFFFFF" />
+                        </View>
+                      ) : (
+                        <LockIcon size={14} color="#94A3B8" />
+                      )}
+                    </View>
+
+                    {isUnlocked ? (
+                      <View style={styles.levelCardBody}>
+                        <Text style={styles.levelTitleText}>
+                          {isCompleted ? 'Completed' : 'Play Now'}
+                        </Text>
+                        <View style={styles.starsRow}>
+                          {[1, 2, 3].map((s) => (
+                            <StarIcon
+                              key={`star-${lvl}-${s}`}
+                              size={12}
+                              color="#F59E0B"
+                              filled={isCompleted && s <= Math.max(1, stars)}
+                            />
+                          ))}
+                        </View>
+                      </View>
+                    ) : (
+                      <View style={styles.levelCardBody}>
+                        <Text style={styles.lockedText}>Locked</Text>
+                        <Text style={styles.lockedSubText}>Pass Level {lvl - 1}</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
         </ScrollView>
       )}
 
@@ -303,40 +329,61 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 32,
   },
-  heroImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 16,
-    backgroundColor: '#E2E8F0',
-  },
-  detailCard: {
+  gameBannerCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 20,
-    marginTop: 16,
+    borderRadius: 16,
+    padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#E2E8F0',
+    marginBottom: 16,
     shadowColor: '#64748B',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.06,
     shadowRadius: 6,
-    elevation: 3,
+    elevation: 2,
   },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+  bannerThumbnail: {
+    width: 64,
+    height: 64,
+    borderRadius: 12,
+    backgroundColor: '#E2E8F0',
+    marginRight: 12,
   },
-  gameTitle: {
+  bannerInfo: {
+    flex: 1,
+  },
+  bannerTitle: {
     color: '#0F172A',
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
   },
-  gameMeta: {
+  bannerMeta: {
     color: '#0284C7',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
-    marginTop: 4,
+    marginTop: 2,
+    marginBottom: 6,
+  },
+  bannerStatsRow: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  miniStat: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  miniStatLabel: {
+    color: '#64748B',
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
+  miniStatValue: {
+    color: '#0F172A',
+    fontSize: 11,
+    fontWeight: '800',
   },
   favBtn: {
     backgroundColor: '#F1F5F9',
@@ -345,80 +392,110 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
-  favText: {
-    fontSize: 20,
-  },
-  description: {
-    color: '#475569',
-    fontSize: 14,
-    lineHeight: 20,
-    marginVertical: 16,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor: '#F8FAFC',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 20,
+  downloadSection: {
+    backgroundColor: '#E0F2FE',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: '#BAE6FD',
   },
-  statBox: {
-    alignItems: 'center',
-  },
-  statLabel: {
-    color: '#64748B',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  statVal: {
-    color: '#0284C7',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 2,
-  },
-  statValText: {
-    color: '#059669',
-    fontSize: 11,
-    fontWeight: 'bold',
-    marginTop: 4,
-  },
-  statValTextNot: {
-    color: '#D97706',
-    fontSize: 11,
-    fontWeight: 'bold',
-    marginTop: 4,
-  },
-  mainPlayBtn: {
+  downloadBtn: {
     backgroundColor: '#0284C7',
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: 12,
+    borderRadius: 10,
     alignItems: 'center',
-    marginBottom: 10,
-    shadowColor: '#0284C7',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 3,
   },
-  mainPlayText: {
+  downloadBtnText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 13,
   },
-  levelSelectBtn: {
-    backgroundColor: '#F1F5F9',
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#CBD5E1',
+  levelSection: {
+    marginTop: 4,
   },
-  levelSelectText: {
+  levelSectionTitle: {
     color: '#0F172A',
+    fontSize: 18,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  levelSectionSub: {
+    color: '#64748B',
+    fontSize: 12,
+    marginTop: 2,
+    marginBottom: 16,
+  },
+  levelGrid: {
+    flexDirection: 'column',
+    gap: 12,
+  },
+  levelCard: {
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+  },
+  unlockedCard: {
+    backgroundColor: '#FFFFFF',
+    borderColor: '#0284C7',
+    shadowOpacity: 0.08,
+    elevation: 3,
+  },
+  lockedCard: {
+    backgroundColor: '#F8FAFC',
+    borderColor: '#E2E8F0',
+    shadowOpacity: 0,
+    elevation: 0,
+    opacity: 0.7,
+  },
+  levelCardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  levelCardBadge: {
     fontSize: 14,
+    fontWeight: 'bold',
+    color: '#0284C7',
+    letterSpacing: 0.5,
+  },
+  lockedBadge: {
+    color: '#64748B',
+  },
+  playTag: {
+    backgroundColor: '#0284C7',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  levelCardBody: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  levelTitleText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  starsRow: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  lockedText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#94A3B8',
+  },
+  lockedSubText: {
+    fontSize: 11,
+    color: '#94A3B8',
   },
   gameViewContainer: {
     flex: 1,
