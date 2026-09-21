@@ -6,6 +6,8 @@ node_modules/
 dist/
 web-build/
 build/
+android/
+ios/
 *.apk
 *.aab
 

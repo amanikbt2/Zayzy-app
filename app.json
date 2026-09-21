@@ -2,7 +2,7 @@
   "expo": {
     "name": "Zayzy Games",
     "slug": "zayzy-games",
-    "owner": "sliver1",
+    "owner": "amanikbt1",
     "version": "1.0.0",
     "description": "Zayzy Games - offline",
     "icon": "./assets/icon.png",
@@ -28,7 +28,29 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
-    ]
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 34,
+            "targetSdkVersion": 34,
+            "minSdkVersion": 24,
+            "buildToolsVersion": "34.0.0"
+          }
+        }
+      ]
+    ],
+    "cli": {
+      "appVersionSource": "remote"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2c4ebf4e-1b68-48b6-a64d-4a40563ed0f2"
+      }
+    }
   }
 }
