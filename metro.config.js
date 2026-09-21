@@ -5,16 +5,40 @@ const config = getDefaultConfig(__dirname);
 
 config.maxWorkers = 2;
 
+const singletonModules = [
+  'react',
+  'react-dom',
+  'react-native',
+  '@react-navigation/native',
+  '@react-navigation/core',
+  '@react-navigation/elements',
+  '@react-navigation/routers',
+  '@react-navigation/bottom-tabs',
+  '@react-navigation/native-stack',
+];
+
+const extraNodeModules = {};
+singletonModules.forEach((pkg) => {
+  extraNodeModules[pkg] = path.resolve(__dirname, 'node_modules', pkg);
+});
+
 config.resolver.extraNodeModules = {
   ...config.resolver.extraNodeModules,
-  '@react-navigation/native': path.resolve(__dirname, 'node_modules/@react-navigation/native'),
-  '@react-navigation/core': path.resolve(__dirname, 'node_modules/@react-navigation/core'),
-  '@react-navigation/native-stack': path.resolve(__dirname, 'node_modules/@react-navigation/native-stack'),
-  '@react-navigation/bottom-tabs': path.resolve(__dirname, 'node_modules/@react-navigation/bottom-tabs'),
-  '@react-navigation/elements': path.resolve(__dirname, 'node_modules/@react-navigation/elements'),
-  '@react-navigation/routers': path.resolve(__dirname, 'node_modules/@react-navigation/routers'),
-  'react': path.resolve(__dirname, 'node_modules/react'),
-  'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+  ...extraNodeModules,
+};
+
+const defaultResolveRequest = config.resolver.resolveRequest;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  if (singletonModules.includes(moduleName)) {
+    return {
+      filePath: require.resolve(moduleName, { paths: [__dirname] }),
+      type: 'sourceFile',
+    };
+  }
+  if (defaultResolveRequest) {
+    return defaultResolveRequest(context, moduleName, platform);
+  }
+  return context.resolveRequest(context, moduleName, platform);
 };
 
 module.exports = config;
