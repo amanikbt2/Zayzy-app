@@ -106,9 +106,9 @@ export const PuzzleView: React.FC<Props> = ({ levelConfig, onWin, onGameOver, on
       </View>
 
       {/* Sliding Puzzle Grid */}
-      <View style={[styles.board, { width: size === 3 ? 300 : 320, height: size === 3 ? 300 : 320 }]}>
+      <View style={[styles.board, { width: size === 3 ? 270 : 290, height: size === 3 ? 270 : 290 }]}>
         {board.map((val, idx) => {
-          const tileSize = (size === 3 ? 280 : 300) / size;
+          const tileSize = (size === 3 ? 250 : 270) / size;
           return (
             <TouchableOpacity
               key={`tile-${idx}`}
@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   tileNumber: {
     color: '#FFFFFF',
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   footer: {
@@ -209,6 +209,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 12,
+    marginBottom: 40,
   },
   footerText: {
     color: '#94A3B8',

@@ -170,8 +170,8 @@ const styles = StyleSheet.create({
     color: '#F8FAFC',
   },
   board: {
-    width: 330,
-    height: 330,
+    width: 290,
+    height: 290,
     backgroundColor: '#1E293B',
     borderRadius: 16,
     padding: 6,
@@ -184,8 +184,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   tile: {
-    width: 36,
-    height: 36,
+    width: 32,
+    height: 32,
     backgroundColor: '#0F172A',
     borderRadius: 8,
     alignItems: 'center',
@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 12,
+    marginBottom: 40,
   },
   footerText: {
     color: '#94A3B8',
