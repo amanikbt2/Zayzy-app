@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Switch, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Switch, ScrollView, TouchableOpacity } from 'react-native';
 import { Header } from '../src/components/Header';
 import { BottomNavBar } from '../src/components/BottomNavBar';
 import { getSettings, saveSettings } from '../src/storage/settings';
 import { UserSettings } from '../src/types/progress';
-import { VolumeIcon, UserIcon, InfoIcon } from '../src/components/SvgIcons';
+import { VolumeIcon, UserIcon, InfoIcon, NextIcon } from '../src/components/SvgIcons';
+import { useRouter } from 'expo-router';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const [settings, setSettingsState] = useState<UserSettings | null>(null);
 
   useEffect(() => {
@@ -110,12 +112,19 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <InfoIcon size={20} color="#0284C7" />
-            <Text style={styles.sectionTitle}>About Zayzy Games</Text>
+            <Text style={styles.sectionTitle}>About & Legal</Text>
           </View>
           <View style={styles.card}>
             <Text style={styles.infoText}>Platform Version: 1.0.0 (V1 Release)</Text>
             <Text style={styles.infoText}>Target: Android & React Native Web</Text>
-            <Text style={styles.infoText}>Architecture: Downloadable Engine-Content Protocol</Text>
+            <Text style={styles.infoText}>Developer: amanikbt1@gmail.com</Text>
+
+            <View style={styles.divider} />
+
+            <TouchableOpacity style={styles.privacyLinkRow} onPress={() => router.push('/privacy')}>
+              <Text style={styles.privacyLinkText}>Privacy Policy</Text>
+              <NextIcon size={16} color="#0284C7" />
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -191,5 +200,16 @@ const styles = StyleSheet.create({
     color: '#64748B',
     fontSize: 12,
     lineHeight: 20,
+  },
+  privacyLinkRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  privacyLinkText: {
+    color: '#0284C7',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
