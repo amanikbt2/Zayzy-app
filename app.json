@@ -3,7 +3,7 @@
     "name": "Zayzy Games",
     "slug": "zayzy-games",
     "owner": "amanikbt1",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Zayzy Games - offline",
     "icon": "./assets/icon.png",
     "orientation": "portrait",
@@ -16,7 +16,7 @@
     },
     "android": {
       "package": "com.amanikbt1.zayzygame",
-      "versionCode": 4,
+      "versionCode": 5,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
@@ -33,10 +33,9 @@
         "expo-build-properties",
         {
           "android": {
-            "compileSdkVersion": 34,
-            "targetSdkVersion": 34,
-            "minSdkVersion": 24,
-            "buildToolsVersion": "34.0.0"
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "minSdkVersion": 24
           }
         }
       ]
