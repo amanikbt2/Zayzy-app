@@ -3,7 +3,7 @@
     "name": "Zayzy Games",
     "slug": "zayzy-games",
     "owner": "amanikbt1",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Zayzy Games - offline",
     "icon": "./assets/icon.png",
     "orientation": "portrait",
@@ -11,12 +11,12 @@
     "scheme": "zayzy",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.amanikbt1.zayzygames",
+      "bundleIdentifier": "com.amanikbt1.zayzygame",
       "icon": "./assets/icon.png"
     },
     "android": {
-      "package": "com.amanikbt1.zayzygames",
-      "versionCode": 3,
+      "package": "com.amanikbt1.zayzygame",
+      "versionCode": 4,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
