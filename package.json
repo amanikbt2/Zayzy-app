@@ -7,7 +7,8 @@
     "android": "set EXPO_OFFLINE=true&& npx expo start --android --offline --port 8105",
     "ios": "set EXPO_OFFLINE=true&& npx expo start --ios --offline --port 8105",
     "web": "set EXPO_OFFLINE=true&& npx expo start --web --offline --port 8105",
-    "build:web": "npx expo export -p web"
+    "build:web": "npx expo export -p web",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.0.1",
@@ -52,6 +53,7 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
+    "patch-package": "^8.0.0",
     "typescript": "~5.3.3"
   },
   "private": true,
