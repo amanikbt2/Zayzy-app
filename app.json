@@ -3,7 +3,7 @@
     "name": "Zayzy Games",
     "slug": "zayzy-games",
     "owner": "amanikbt2",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "Zayzy Games - offline",
     "icon": "./assets/icon.png",
     "orientation": "portrait",
@@ -16,7 +16,7 @@
     },
     "android": {
       "package": "com.amanikbt1.zayzygame",
-      "versionCode": 7,
+      "versionCode": 8,
       "icon": "./assets/icon.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
