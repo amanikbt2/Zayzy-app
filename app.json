@@ -2,7 +2,7 @@
   "expo": {
     "name": "Zayzy Games",
     "slug": "zayzy-games",
-    "owner": "amanikbt1",
+    "owner": "amanikbt2",
     "version": "1.0.5",
     "description": "Zayzy Games - offline",
     "icon": "./assets/icon.png",
@@ -50,7 +50,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "4ce22158-5100-46e0-9f83-b77c7bfe97bb"
+        "projectId": "11d362b1-7ae8-4ace-9871-1e391df8b9c2"
       }
     }
   }
